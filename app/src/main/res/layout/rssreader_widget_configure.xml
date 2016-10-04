@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:padding="@dimen/activity_padding">
+
+    <TextView
+        android:id="@+id/tvConfigure"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:layout_marginBottom="@dimen/widget_views_margin"
+        android:textStyle="bold"
+        android:text="@string/tvConfigureText" />
+    <View
+        android:layout_below="@id/tvConfigure"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/colorPrimaryTransparent"/>
+
+    <TextView
+        android:id="@+id/tvRSSUrlTitle"
+        android:layout_below="@id/tvConfigure"
+        android:layout_marginTop="@dimen/widget_views_margin"
+        android:layout_marginBottom="@dimen/widget_views_margin"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/tvRSSUrlTitleText" />
+    <EditText
+        android:id="@+id/etRSSUrl"
+        android:layout_toRightOf="@id/tvRSSUrlTitle"
+        android:layout_alignBottom="@id/tvRSSUrlTitle"
+        android:layout_marginLeft="@dimen/widget_views_margin"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        style="@style/EditTextStyle"
+        android:inputType="text" />
+    <View
+        android:layout_below="@id/tvRSSUrlTitle"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/colorPrimaryTransparent"/>
+
+    <TextView
+        android:id="@+id/tvRSSTimeTitle"
+        android:layout_below="@id/tvRSSUrlTitle"
+        android:layout_marginTop="@dimen/widget_views_margin"
+        android:layout_marginBottom="@dimen/widget_views_margin"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/tvRSSTimeTitleText" />
+    <EditText
+        android:id="@+id/etRSSTime"
+        android:layout_toRightOf="@id/tvRSSTimeTitle"
+        android:layout_alignBottom="@id/tvRSSTimeTitle"
+        android:layout_marginLeft="@dimen/widget_views_margin"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        style="@style/EditTextStyle"
+        android:inputType="numberDecimal" />
+    <View
+        android:layout_below="@id/tvRSSTimeTitle"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/colorPrimaryTransparent"/>
+
+    <Button
+        android:id="@+id/btAddWidget"
+        android:layout_below="@id/etRSSTime"
+        android:layout_centerHorizontal="true"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/widget_views_margin"
+        android:text="@string/btAddWidgetText" />
+
+</RelativeLayout>

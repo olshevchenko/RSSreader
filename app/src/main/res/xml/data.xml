@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<rss version="2.0">
+    <channel>
+        <title>Title1</title>
+        <link>http://www.link1.com</link>
+        <description>Description1.com</description>
+    </channel>
+    <channel>
+        <title>Title2</title>
+        <link>http://www.link2.com</link>
+        <description>Description2.com</description>
+    </channel>
+    <channel>
+        <title>Title3</title>
+        <link>http://www.link3.com</link>
+        <description>Description3.com</description>
+    </channel>
+</rss>
