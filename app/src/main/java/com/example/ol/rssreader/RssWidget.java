@@ -11,6 +11,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.HandlerThread;
 import android.support.annotation.NonNull;
+import android.util.Log;
 import android.widget.RemoteViews;
 
 import com.example.ol.rssreader.RSS.RSSItem;
@@ -128,6 +129,7 @@ public class RssWidget extends AppWidgetProvider {
       return;
     /// reconfigure url right over existing intent param
     sRefreshDataIntent.putExtra(Constants.Extras.SERVICE_EXTRA_PARAM_RSS_URL, rssUrl);
+    Log.d(LOG_TAG, "startCycleRefresh() - rssTime=" + rssTime);
     sAlarmManager.setRepeating(AlarmManager.RTC_WAKEUP, System.currentTimeMillis(),
         rssTime, PendingIntent.getService(
             context, 0, sRefreshDataIntent, PendingIntent.FLAG_CANCEL_CURRENT));
@@ -136,6 +138,7 @@ public class RssWidget extends AppWidgetProvider {
   private void stopCycleRefresh(Context context) {
     if (sAlarmManager == null)
       return;
+    Log.d(LOG_TAG, "stopCycleRefresh()");
     sAlarmManager.cancel(PendingIntent.getService(
         context, 0, sRefreshDataIntent, PendingIntent.FLAG_CANCEL_CURRENT));
   }

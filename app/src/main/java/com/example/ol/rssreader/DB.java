@@ -24,7 +24,7 @@ import static com.example.ol.rssreader.Constants.DB.DB_VERSION;
 public class DB {
 
   private static final String DB_CREATE =
-      "create table " + DB_TABLE + "(" +
+      "create table IF NOT EXISTS " + DB_TABLE + "(" +
           COLUMN_ID + " integer primary key autoincrement, " +
           COLUMN_TITLE + " text, " +
           COLUMN_DESCR + " text" +
@@ -48,6 +48,9 @@ public class DB {
 
   public void open() {
     mDB = mDBHelper.getWritableDatabase();
+    if (mDB != null)
+      for (int i = 1; i < 3; i++)
+        addRec(new RSSItem("title " + i, "descr " + i));
   }
 
   public void close() {
@@ -104,8 +107,6 @@ public class DB {
     @Override
     public void onCreate(SQLiteDatabase db) {
       db.execSQL(DB_CREATE);
-      for (int i = 1; i < 3; i++)
-        addRec(new RSSItem("title " + i, "descr " + i));
     }
 
     @Override
