@@ -29,18 +29,18 @@ public class RssWidgetConfigureActivity extends Activity implements View.OnClick
   }
 
   /// Write the prefix to the SharedPreferences object for this widget
-  static void savePrefs(@NonNull Context context,
+  static void savePrefs(@NonNull Context appContext,
                         @NonNull RSSConfigData rssConfigData) {
     SharedPreferences.Editor prefs =
-        context.getSharedPreferences(Constants.Prefs.NAME, 0).edit();
+        appContext.getSharedPreferences(Constants.Prefs.NAME, 0).edit();
     prefs.putString(Constants.Prefs.RSS_URL_KEY, rssConfigData.rssUrl);
     prefs.putInt(Constants.Prefs.RSS_UPDATE_INTERVAL_KEY, rssConfigData.rssTime);
     prefs.apply();
   }
 
   /// Read the prefix from the SharedPreferences object for this widget
-  static @NonNull RSSConfigData loadPrefs(@NonNull Context context) {
-    SharedPreferences prefs = context.getSharedPreferences(Constants.Prefs.NAME, 0);
+  static @NonNull RSSConfigData loadPrefs(@NonNull Context appContext) {
+    SharedPreferences prefs = appContext.getSharedPreferences(Constants.Prefs.NAME, 0);
     String rssUrl =
         prefs.getString(Constants.Prefs.RSS_URL_KEY, Constants.Rss.RSS_URL);
     int rssTime =
@@ -48,8 +48,9 @@ public class RssWidgetConfigureActivity extends Activity implements View.OnClick
     return new RSSConfigData(rssUrl, rssTime);
   }
 
-  static void deleteTitlePref(@NonNull Context context) {
-    SharedPreferences.Editor prefs = context.getSharedPreferences(Constants.Prefs.NAME, 0).edit();
+  static void deleteTitlePref(@NonNull Context appContext) {
+    SharedPreferences.Editor prefs =
+        appContext.getSharedPreferences(Constants.Prefs.NAME, 0).edit();
     prefs.remove(Constants.Prefs.RSS_URL_KEY);
     prefs.remove(Constants.Prefs.RSS_UPDATE_INTERVAL_KEY);
     prefs.apply();
@@ -82,7 +83,7 @@ public class RssWidgetConfigureActivity extends Activity implements View.OnClick
     }
 
     /// Get preferences data and fill the forms with it
-    RSSConfigData rssConfigData = loadPrefs(RssWidgetConfigureActivity.this);
+    RSSConfigData rssConfigData = loadPrefs(this.getApplicationContext());
     mEtRssUrl = (EditText) findViewById(R.id.etRSSUrl);
     if (mEtRssUrl != null)
       mEtRssUrl.setText(rssConfigData.rssUrl);
@@ -98,7 +99,7 @@ public class RssWidgetConfigureActivity extends Activity implements View.OnClick
   public void onClick(View v) {
     switch (v.getId()) {
       case R.id.btAddWidget:
-        final Context context = RssWidgetConfigureActivity.this;
+        final Context appContext = this.getApplicationContext();
 
         /// store params locally
         mRssUrl = mEtRssUrl.getText().toString();
@@ -106,11 +107,12 @@ public class RssWidgetConfigureActivity extends Activity implements View.OnClick
           mRssTime = Integer.valueOf(mEtRssTime.getText().toString());
         } catch (NumberFormatException ex) {
         }
-        savePrefs(context, new RSSConfigData(mRssUrl, mRssTime));
+        savePrefs(appContext, new RSSConfigData(mRssUrl, mRssTime));
 
         /// then, update the app widget
-        AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(context);
-        RssWidget.updateAppWidget( context, appWidgetManager, mAppWidgetId );
+        AppWidgetManager appWidgetManager =
+            AppWidgetManager.getInstance(appContext);
+        RssWidget.updateAppWidget(appContext, appWidgetManager, mAppWidgetId );
         setResult(RESULT_OK, mResultValue);
         finish();
         break;

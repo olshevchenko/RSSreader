@@ -14,7 +14,7 @@
         android:layout_alignParentLeft="true"
         android:background="@color/colorBackgroundDark"
         android:src="@drawable/ic_navigate_before_white_36dp"/>
-    <View
+    <ImageView
         android:layout_width="1dp"
         android:layout_height="match_parent"
         android:background="@color/colorPrimaryTransparent"/>
@@ -22,7 +22,7 @@
         android:layout_width="0dp"
         android:layout_weight="4"
         android:layout_height="match_parent">
-        <View
+        <ImageView
             android:id="@+id/vDivider"
             android:layout_width="match_parent"
             android:layout_height="0dp"
@@ -56,7 +56,7 @@
             android:background="@color/colorBackgroundDark"
             android:src="@drawable/ic_settings_white_36dp"/>
     </RelativeLayout>
-    <View
+    <ImageView
         android:layout_width="1dp"
         android:layout_height="match_parent"
         android:background="@color/colorPrimaryTransparent"/>

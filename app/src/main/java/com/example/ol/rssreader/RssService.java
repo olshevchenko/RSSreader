@@ -1,6 +1,7 @@
 package com.example.ol.rssreader;
 
 import android.app.Service;
+import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -33,7 +34,7 @@ public class RssService extends Service {
     mDB.open();
 
     /// get access to global RSS data
-    sDataStorage = DataStorage.getInstance(this);
+    sDataStorage = DataStorage.getInstance(this.getApplicationContext());
   }
 
   public int onStartCommand(Intent intent, int flags, int startId) {
@@ -78,7 +79,7 @@ public class RssService extends Service {
     Log.d(LOG_TAG, "startRead() - [" + currentDateandTime + "]");
 
     if (mDB != null) {
-      mGetRssNParseTask = new GetRssNParseTask(mDB);
+      mGetRssNParseTask = new GetRssNParseTask(this.getApplicationContext(), mDB);
       mGetRssNParseTask.execute(new String[]{url});
     }
   }
@@ -92,9 +93,11 @@ public class RssService extends Service {
   }
   private class GetRssNParseTask extends AsyncTask<String, Void, Void> {
     int mOldRssDBHash = 1; /// hash for RSS DB
+    private Context mAppContext;
     private DB mDB;
 
-    public GetRssNParseTask(@NonNull DB db) {
+    public GetRssNParseTask(Context context, @NonNull DB db) {
+      mAppContext = context;
       this.mDB = db;
     }
 
@@ -134,7 +137,7 @@ public class RssService extends Service {
       super.onPostExecute(aVoid);
       if (mDB.getCumHashCode() != mOldRssDBHash) {
         Log.d(LOG_TAG, "GetRssNParseTask() = got __NEW__ data");
-        Intent notifyIntent = new Intent();
+        Intent notifyIntent = new Intent(mAppContext, RssWidget.class);
         notifyIntent.setAction(Constants.Actions.SERVICE_DATA_CHANGED);
         sendBroadcast(notifyIntent);
       }
