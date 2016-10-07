@@ -100,12 +100,15 @@ public class DataStorage {
     if (newItem != null) {
       /// full success
       positionsMap.put(appWidgetId, newPos);
+      Log.d(LOG_TAG, "getNewItem() - newItem=" + newItem + ", newPos=" + newPos);
       return newItem;
     }
 
     /// partial success (end of data list): - return currentItem
     /// failure: - return EmptyItem
     /// the same step: - don't store new position
+    Log.d(LOG_TAG,
+        "getNewItem() - failure: Item=" + currentItem + ", currentPos=" + currentPos);
     return currentItem;
   }
 

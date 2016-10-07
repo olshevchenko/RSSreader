@@ -28,6 +28,11 @@ public class RSSItem {
   }
 
   @Override
+  public String toString() {
+    return "{" + mTitle + ", " + mDescription + "}";
+  }
+
+  @Override
   public int hashCode() {
     int result = mTitle.hashCode();
     result = 31 * result + mDescription.hashCode();

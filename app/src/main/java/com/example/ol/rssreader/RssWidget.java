@@ -26,8 +26,8 @@ public class RssWidget extends AppWidgetProvider {
   /// for logging
   private static final String LOG_TAG = RssWidget.class.getName();
 
-  private AppWidgetManager mAppWidgetManager;
-  private ComponentName mComponentName;
+  private static AppWidgetManager mAppWidgetManager;
+  private static ComponentName mComponentName;
 
   /// global settings
   private static String sRssUrl = Constants.Rss.RSS_URL;
@@ -84,9 +84,14 @@ public class RssWidget extends AppWidgetProvider {
   public void onEnabled(Context context) {
     super.onEnabled(context);
 
+    Log.d(LOG_TAG, "onEnabled()");
+
     Context appContext = context.getApplicationContext();
     mAppWidgetManager = AppWidgetManager.getInstance(appContext);
     mComponentName = new ComponentName(appContext, RssWidget.class);
+    Log.d(LOG_TAG,
+        "onEnabled() - mAppWidgetManager=" + mAppWidgetManager +
+            ", mComponentName=" + mComponentName );
 
     /// load params for ALL widgets
     RssWidgetConfigureActivity.RSSConfigData rssConfigData =
@@ -180,12 +185,15 @@ public class RssWidget extends AppWidgetProvider {
    * refreshes RSS items in ALL widgets
    */
   private void refreshRSSData() {
-    sDataStorage.updateItemsList(); /// replace data in storage
+    if (sDataStorage != null)
+      sDataStorage.updateItemsList(); /// replace data in storage
 
-    /// redraws ALL widgets (just like we've made navigate next in all widgets)
-    int[] appWidgetIds = mAppWidgetManager.getAppWidgetIds(mComponentName);
-    for (int appWidgetId : appWidgetIds) {
-      changeWidgetDataItem(appWidgetId, true);
+    if (mComponentName != null) {
+      /// redraws ALL widgets (just like we've made navigate next in all widgets)
+      int[] appWidgetIds = mAppWidgetManager.getAppWidgetIds(mComponentName);
+      for (int appWidgetId : appWidgetIds) {
+        changeWidgetDataItem(appWidgetId, true);
+      }
     }
   }
 
@@ -198,6 +206,8 @@ public class RssWidget extends AppWidgetProvider {
   private void changeWidgetDataItem(int appWidgetId, boolean nextFlag) {
     if (sDataStorage == null)
       return;
+    Log.d(LOG_TAG, "changeWidgetDataItem(appWidgetId=" + appWidgetId + ")");
+
     /// get items data according navigation direction exactly for this widget
     RSSItem item = sDataStorage.getNewItem(appWidgetId, nextFlag);
 
