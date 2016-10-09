@@ -30,7 +30,7 @@
     <EditText
         android:id="@+id/etRSSUrl"
         android:layout_toRightOf="@id/tvRSSUrlTitle"
-        android:layout_alignBottom="@id/tvRSSUrlTitle"
+        android:layout_alignBaseline="@id/tvRSSUrlTitle"
         android:layout_marginLeft="@dimen/widget_views_margin"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -53,7 +53,7 @@
     <EditText
         android:id="@+id/etRSSTime"
         android:layout_toRightOf="@id/tvRSSTimeTitle"
-        android:layout_alignBottom="@id/tvRSSTimeTitle"
+        android:layout_alignBaseline="@id/tvRSSTimeTitle"
         android:layout_marginLeft="@dimen/widget_views_margin"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -67,7 +67,7 @@
 
     <Button
         android:id="@+id/btAddWidget"
-        android:layout_below="@id/etRSSTime"
+        android:layout_below="@id/tvRSSTimeTitle"
         android:layout_centerHorizontal="true"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

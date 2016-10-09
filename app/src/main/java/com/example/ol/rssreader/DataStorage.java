@@ -2,7 +2,6 @@ package com.example.ol.rssreader;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.util.Log;
 
 import com.example.ol.rssreader.RSS.RSSItem;
@@ -32,6 +31,9 @@ public class DataStorage {
   private List<RSSItem> itemsList = new ArrayList<>(); /// working list for widget navigation
   private List<RSSItem> updateList = null; /// list for RSS updates temporary storage
 
+  private int mItemsHashCode = 1; /// cumulative hash code for ALL working items
+  private int mUpdateHashCode = 1; /// hash code for NEW (update) list
+
   private Context mContext;
   private RSSItem mEmptyItem = null;
 
@@ -42,15 +44,9 @@ public class DataStorage {
         mContext.getString(R.string.tvEmptyTitleText));
   }
 
-  private static void init(Context context) {
-    if (null != sInstance)
-      return;
-    sInstance = new DataStorage(context);
-  }
-
   public static DataStorage getInstance(Context context) {
     if (sInstance == null)
-      init(context);
+      sInstance = new DataStorage(context);
     return sInstance;
   }
 
@@ -70,7 +66,7 @@ public class DataStorage {
     int newPos;
     RSSItem currentItem;
     RSSItem newItem;
-    Log.d(LOG_TAG, "getNewItem(" + appWidgetId + ")");
+//    Log.d(LOG_TAG, "getNewItem(" + appWidgetId + ")");
 
     /// set default position, get current if exists and evaluate new one
     if (isNext)
@@ -100,7 +96,8 @@ public class DataStorage {
     if (newItem != null) {
       /// full success
       positionsMap.put(appWidgetId, newPos);
-      Log.d(LOG_TAG, "getNewItem() - newItem=" + newItem + ", newPos=" + newPos);
+      Log.d(LOG_TAG,
+          "getNewItem(" + appWidgetId + ")[" + newPos + "]-success: newItem=" + newItem + ", newPos=" + newPos);
       return newItem;
     }
 
@@ -108,28 +105,39 @@ public class DataStorage {
     /// failure: - return EmptyItem
     /// the same step: - don't store new position
     Log.d(LOG_TAG,
-        "getNewItem() - failure: Item=" + currentItem + ", currentPos=" + currentPos);
+        "=====getNewItem(" + appWidgetId + ")[" + newPos + "]-FAILURE: Item=" + currentItem + ", currentPos=" + currentPos);
     return currentItem;
   }
 
-  public void removeItemPosition(int id) {
+  public void removeItemPosition(int appWidgetId) {
     Log.d(LOG_TAG, "removeItemPosition()");
-    positionsMap.remove(id);
+    positionsMap.remove(appWidgetId);
   }
 
   /**
-   *
+   * replaces data item list reference (to new one) and clears list positions of all widgets
    */
   public void updateItemsList() {
-    Log.d(LOG_TAG, "updateItemsList()");
+//    Log.d(LOG_TAG, "updateItemsList()");
     if (updateList == null)
       return;
     itemsList = updateList; /// get list with new data
+    mItemsHashCode = mUpdateHashCode; ///store new one
     positionsMap.clear(); /// force widgets to later show item[0] by getNewItem()
   }
 
   public void storeNewData(List<RSSItem> newDataList) {
+    if (newDataList == null)
+      return;
     updateList = newDataList;
+    /// eval new hash
+    mUpdateHashCode = 1;
+    for (RSSItem item : updateList)
+      mUpdateHashCode = mUpdateHashCode*17 + item.hashCode();
+  }
+
+  public boolean isHashDifferent() {
+    return mItemsHashCode != mUpdateHashCode;
   }
 
   void clear() {

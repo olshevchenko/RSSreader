@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 
@@ -45,10 +46,11 @@ public class RssWidgetConfigureActivity extends Activity implements View.OnClick
         prefs.getString(Constants.Prefs.RSS_URL_KEY, Constants.Rss.RSS_URL);
     int rssTime =
         prefs.getInt(Constants.Prefs.RSS_UPDATE_INTERVAL_KEY, Constants.Rss.RSS_UPDATE_INTERVAL);
+    Log.d(LOG_TAG, "loadPrefs(): rssUrl=" + rssUrl + ", rssTime=" + rssTime);
     return new RSSConfigData(rssUrl, rssTime);
   }
 
-  static void deleteTitlePref(@NonNull Context appContext) {
+  static void deletePrefs(@NonNull Context appContext) {
     SharedPreferences.Editor prefs =
         appContext.getSharedPreferences(Constants.Prefs.NAME, 0).edit();
     prefs.remove(Constants.Prefs.RSS_URL_KEY);
@@ -109,10 +111,8 @@ public class RssWidgetConfigureActivity extends Activity implements View.OnClick
         }
         savePrefs(appContext, new RSSConfigData(mRssUrl, mRssTime));
 
-        /// then, update the app widget
-        AppWidgetManager appWidgetManager =
-            AppWidgetManager.getInstance(appContext);
-        RssWidget.updateAppWidget(appContext, appWidgetManager, mAppWidgetId );
+        /// then, hit alarm
+        RssWidget.startCycleRefresh(appContext, mRssUrl, mRssTime);
         setResult(RESULT_OK, mResultValue);
         finish();
         break;

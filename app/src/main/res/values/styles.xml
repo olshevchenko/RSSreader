@@ -1,7 +1,7 @@
 <resources>
 
     <!-- Base application theme. -->
-    <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
+    <style name="AppTheme" parent="ThemeOverlay.AppCompat.Dark">
         <!-- Customize your theme here. -->
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
@@ -11,8 +11,10 @@
     <!-- EditTexts -->
     <style name="EditTextStyle" parent="@android:style/Widget.EditText">
         <item name="android:background">@android:color/transparent</item>
+<!--
         <item name="android:textColor">@color/colorPrimary</item>
         <item name="android:textColorHint">@color/colorPrimaryTransparent</item>
+-->
         <item name="android:focusable">true</item>
         <item name="android:clickable">true</item>
         <item name="android:maxLines">1</item>

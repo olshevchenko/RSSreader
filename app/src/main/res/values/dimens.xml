@@ -5,6 +5,7 @@
     <dimen name="activity_padding">16dp</dimen>
 
     <!-- For Widget -->
+    <dimen name="widget_corners_size">8dp</dimen>
     <dimen name="widget_margin">8dp</dimen>
     <dimen name="widget_margin_top">8dp</dimen>
     <dimen name="widget_margin_bottom">8dp</dimen>
@@ -16,6 +17,7 @@
     <dimen name="widgetMinHeight">110dp</dimen>
 
     <dimen name="text_margin">8dp</dimen>
+    <dimen name="appname_text_size">14sp</dimen>
     <dimen name="header_text_size">12sp</dimen>
     <dimen name="descr_text_size">10sp</dimen>
     <dimen name="text_size">10sp</dimen>

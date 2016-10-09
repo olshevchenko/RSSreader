@@ -8,8 +8,6 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.HandlerThread;
 import android.support.annotation.NonNull;
 import android.util.Log;
 import android.widget.RemoteViews;
@@ -35,9 +33,6 @@ public class RssWidget extends AppWidgetProvider {
 
   private static DataStorage sDataStorage = null;
 
-  private static HandlerThread sRefreshDataThread;
-  private static Handler sRefreshDataHandler;
-
   /// alarm for refresh data (through service)
   private static AlarmManager sAlarmManager = null;
   private static Intent sRefreshDataIntent = null;
@@ -45,10 +40,13 @@ public class RssWidget extends AppWidgetProvider {
   public void onReceive(Context context, Intent intent) {
     if (Constants.Actions.SERVICE_DATA_CHANGED.equals(intent.getAction()))
       /// got service event for data change
-      refreshRSSData();
-    else if (Constants.Actions.WIDGET_NAVIGATE.equals(intent.getAction())) {
+      changeAllWidgetsData();
+    else if (Constants.Actions.WIDGET_NAVIGATE_NEXT.equals(intent.getAction()))
       /// got navigation click => get new data and show it
-      changeNaviData(intent.getExtras());
+      changeNaviData(intent.getExtras(), true);
+    else if (Constants.Actions.WIDGET_NAVIGATE_PREV.equals(intent.getAction())) {
+      /// got navigation click => get new data and show it
+      changeNaviData(intent.getExtras(), false);
     } else
       /// pass standard intent for widget
       super.onReceive(context, intent);
@@ -61,7 +59,8 @@ public class RssWidget extends AppWidgetProvider {
     /// build view objects & use it
     RemoteViews rv = buildRemoteViews(appContext, appWidgetId);
     RemoteViewsStorage.addRemoteViews(appWidgetId, rv);
-    appWidgetManager.updateAppWidget(appWidgetId, rv);
+    /// redraws widget in order to show real RSS data (just like we've made navigate next in all widgets)
+    changeWidgetDataItem(appWidgetId, true);
   }
 
   @Override
@@ -102,19 +101,11 @@ public class RssWidget extends AppWidgetProvider {
     /// get access to global RSS data
     sDataStorage = DataStorage.getInstance(appContext);
 
-    /// start separate thread for data refresh
-/*
-    sRefreshDataThread = new HandlerThread(Constants.Widget.REFRESH_THREAD_NAME);
-    sRefreshDataThread.start();
-    sRefreshDataHandler = new Handler(sRefreshDataThread.getLooper());
-*/
-
     sAlarmManager = (AlarmManager) appContext.getSystemService(Context.ALARM_SERVICE);
     sRefreshDataIntent = new Intent(appContext, RssService.class);
     sRefreshDataIntent.setAction(Constants.Actions.SERVICE_GET_DATA);
     sRefreshDataIntent.putExtra(Constants.Extras.SERVICE_EXTRA_PARAM_RSS_URL, sRssUrl);
     context.startService(sRefreshDataIntent); /// first start
-    startCycleRefresh(appContext, sRssUrl, sRssTime);
   }
 
   @Override
@@ -124,13 +115,14 @@ public class RssWidget extends AppWidgetProvider {
     if (sDataStorage != null)
       sDataStorage.clear();
     stopCycleRefresh(context.getApplicationContext()); /// stop cyclical alarm signalling
+    sRefreshDataIntent = new Intent(context.getApplicationContext(), RssService.class);
     context.stopService(sRefreshDataIntent);
 
     /// when removing LAST widget, delete the preference associated
-    RssWidgetConfigureActivity.deleteTitlePref(context.getApplicationContext());
+//    RssWidgetConfigureActivity.deletePrefs(context.getApplicationContext());
   }
 
-  private void startCycleRefresh(Context appContext, String rssUrl, int rssTime) {
+  public static void startCycleRefresh(Context appContext, String rssUrl, int rssTime) {
     if (sAlarmManager == null)
       return;
     /// reconfigure url right over existing intent param
@@ -156,19 +148,21 @@ public class RssWidget extends AppWidgetProvider {
     rv.setTextViewText(R.id.tvDescr, appContext.getString(R.string.tvEmptyDescrText));
 
     /// bind the click intent for the rss item navigation buttons on the widget
-    final Intent navigateIntent = new Intent(appContext, RssWidget.class);
-    navigateIntent.setAction(Constants.Actions.WIDGET_NAVIGATE);
-    navigateIntent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId);
-    final PendingIntent navigateNextPendingIntent =
-        PendingIntent.getBroadcast(appContext, appWidgetId,
-            navigateIntent.putExtra(Constants.Extras.WIDGET_NAVIGATE_NEXT_FLAG, true),
-            PendingIntent.FLAG_UPDATE_CURRENT);
-    final PendingIntent navigatePrevPendingIntent =
-        PendingIntent.getBroadcast(appContext, appWidgetId,
-            navigateIntent.putExtra(Constants.Extras.WIDGET_NAVIGATE_NEXT_FLAG, false),
-            PendingIntent.FLAG_UPDATE_CURRENT);
-    rv.setOnClickPendingIntent(R.id.ibPrev, navigatePrevPendingIntent);
-    rv.setOnClickPendingIntent(R.id.ibNext, navigateNextPendingIntent);
+    Intent navigateIntentNext = new Intent(appContext, RssWidget.class);
+    navigateIntentNext.setAction(Constants.Actions.WIDGET_NAVIGATE_NEXT);
+    navigateIntentNext.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId);
+    rv.setOnClickPendingIntent(
+        R.id.ibNext, PendingIntent.getBroadcast(
+            appContext, appWidgetId, navigateIntentNext, PendingIntent.FLAG_UPDATE_CURRENT
+        )
+    );
+    Intent navigateIntentPrev = new Intent(navigateIntentNext);
+    navigateIntentPrev.setAction(Constants.Actions.WIDGET_NAVIGATE_PREV);
+    rv.setOnClickPendingIntent(
+        R.id.ibPrev, PendingIntent.getBroadcast(
+            appContext, appWidgetId, navigateIntentPrev, PendingIntent.FLAG_UPDATE_CURRENT
+        )
+    );
 
     /// bind config button with config. activity
     final Intent configIntent = new Intent(appContext, RssWidgetConfigureActivity.class);
@@ -182,9 +176,9 @@ public class RssWidget extends AppWidgetProvider {
   }
 
   /**
-   * refreshes RSS items in ALL widgets
+   * refreshes RSS items shown in ALL widgets
    */
-  private void refreshRSSData() {
+  private void changeAllWidgetsData() {
     if (sDataStorage != null)
       sDataStorage.updateItemsList(); /// replace data in storage
 
@@ -203,10 +197,10 @@ public class RssWidget extends AppWidgetProvider {
    * @param appWidgetId
    * @param nextFlag
    */
-  private void changeWidgetDataItem(int appWidgetId, boolean nextFlag) {
+  private static void changeWidgetDataItem(int appWidgetId, boolean nextFlag) {
     if (sDataStorage == null)
       return;
-    Log.d(LOG_TAG, "changeWidgetDataItem(appWidgetId=" + appWidgetId + ")");
+    Log.d(LOG_TAG, "changeWidgetDataItem(" + appWidgetId + ") flag=" + nextFlag);
 
     /// get items data according navigation direction exactly for this widget
     RSSItem item = sDataStorage.getNewItem(appWidgetId, nextFlag);
@@ -223,15 +217,13 @@ public class RssWidget extends AppWidgetProvider {
   /**
    * defines widget & movement direction, then changes data views
    * @param bundle - Bundle containing widget ID and navigation direction
+   * @param nextFlag - 'direction to next' flag
    */
-  private void changeNaviData(@NonNull Bundle bundle) {
+  private void changeNaviData(@NonNull Bundle bundle, boolean nextFlag) {
     if (bundle == null)
       return;
     int appWidgetId = bundle.getInt(
         AppWidgetManager.EXTRA_APPWIDGET_ID, AppWidgetManager.INVALID_APPWIDGET_ID);
-    boolean nextFlag = bundle.getBoolean(
-        Constants.Extras.WIDGET_NAVIGATE_NEXT_FLAG, true);
-
     changeWidgetDataItem(appWidgetId, nextFlag);
   }
 

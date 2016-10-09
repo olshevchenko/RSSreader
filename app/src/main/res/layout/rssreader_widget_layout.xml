@@ -1,38 +1,69 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
+<RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="horizontal"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/colorBackground"
     android:padding="@dimen/widget_margin">
-    <ImageButton
-        android:id="@+id/ibPrev"
-        android:layout_width="0dp"
-        android:layout_weight="1"
-        android:layout_height="match_parent"
-        android:layout_alignParentLeft="true"
-        android:background="@color/colorBackgroundDark"
-        android:src="@drawable/ic_navigate_before_white_36dp"/>
-    <ImageView
-        android:layout_width="1dp"
-        android:layout_height="match_parent"
-        android:background="@color/colorPrimaryTransparent"/>
+    <LinearLayout
+        android:id="@+id/llButtons"
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:padding="@dimen/widget_margin">
+        <ImageButton
+            android:id="@+id/ibPrev"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="match_parent"
+            android:layout_gravity="left"
+            android:background="@drawable/custom_button"
+            android:src="@drawable/ic_navigate_before_white_36dp"/>
+        <ImageButton
+            android:id="@+id/ibSettings"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="match_parent"
+            android:layout_gravity="center"
+            android:background="@drawable/custom_button"
+            android:src="@drawable/ic_settings_white_36dp"/>
+        <ImageButton
+            android:id="@+id/ibNext"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="match_parent"
+            android:layout_gravity="right"
+            android:background="@drawable/custom_button"
+            android:src="@drawable/ic_navigate_next_white_36dp"/>
+    </LinearLayout>
     <RelativeLayout
-        android:layout_width="0dp"
-        android:layout_weight="4"
-        android:layout_height="match_parent">
+        android:layout_below="@id/tvAppName"
+        android:layout_above="@id/llButtons"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@drawable/custom_widget_border">
+        <TextView
+            android:id="@+id/tvAppName"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_horizontal"
+            android:textColor="@color/colorText"
+            android:textSize="@dimen/appname_text_size"
+            android:textStyle="bold"
+            android:text="@string/appName"
+            android:background="@color/colorBackgroundLight"/>
         <ImageView
-            android:id="@+id/vDivider"
+            android:id="@+id/vDividerIntern"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_centerVertical="true"/>
         <TextView
             android:id="@+id/tvTitle"
-            android:layout_above="@id/vDivider"
+            android:layout_above="@id/vDividerIntern"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="center"
+            android:layout_height="match_parent"
+            android:gravity="bottom|center_horizontal"
             android:layout_marginBottom="@dimen/text_margin"
             android:textColor="@color/colorText"
             android:textSize="@dimen/header_text_size"
@@ -40,32 +71,13 @@
             android:text="@string/tvEmptyTitleText"/>
         <TextView
             android:id="@+id/tvDescr"
-            android:layout_below="@id/vDivider"
+            android:layout_below="@id/vDividerIntern"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="center"
+            android:layout_height="match_parent"
+            android:gravity="top|center_horizontal"
             android:layout_marginTop="@dimen/text_margin"
             android:textColor="@color/colorText"
             android:textSize="@dimen/descr_text_size"
             android:text="@string/tvEmptyDescrText"/>
-        <ImageButton
-            android:id="@+id/ibSettings"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
-            android:background="@color/colorBackgroundDark"
-            android:src="@drawable/ic_settings_white_36dp"/>
     </RelativeLayout>
-    <ImageView
-        android:layout_width="1dp"
-        android:layout_height="match_parent"
-        android:background="@color/colorPrimaryTransparent"/>
-    <ImageButton
-        android:id="@+id/ibNext"
-        android:layout_width="0dp"
-        android:layout_weight="1"
-        android:layout_height="match_parent"
-        android:layout_gravity="right"
-        android:background="@color/colorBackgroundDark"
-        android:src="@drawable/ic_navigate_next_white_36dp"/>
-</LinearLayout>
+</RelativeLayout>
