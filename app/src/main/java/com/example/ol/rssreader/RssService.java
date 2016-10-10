@@ -110,7 +110,7 @@ public class RssService extends Service {
     @Override
     protected Void doInBackground(String... urls) {
 //      Log.d(LOG_TAG, "GetRssNParseTask(" + urls[0] + ") - doInBackground()");
-
+/*
       List<RSSItem> newList = null;
       try {
         URL url = new URL(urls[0]);
@@ -134,22 +134,18 @@ public class RssService extends Service {
         Log.d(LOG_TAG, "IO error");
         e.printStackTrace();
       }
-
-/*
+*/
       List<RSSItem> newList = new ArrayList<>(3);
-      RSSItem newItem = null;
-      int newHash = 1;
+      RSSItem newItem;
+      int idx;
       for (int i = 0; i < 3; i++) {
-        if (sCount != 0)
-          newItem = new RSSItem("title[" + i + "]:" + urls[0], "descr[" + i + "]");
-        else
-          newItem = new RSSItem("0title[" + i + "]:" + urls[0], "0descr[" + i + "]");
-        newHash = newHash*17 + newItem.hashCode();
+        idx = sCount*3 + i;
+        newItem = new RSSItem("title[" + idx + "]", "descr[" + idx + "]");
         newList.add(newItem);
       }
-      if (++sCount >= 3)
+      if (++sCount >= 5)
         sCount = 0;
-*/
+
       sDataStorage.storeNewData(newList);
       return null;
     }
