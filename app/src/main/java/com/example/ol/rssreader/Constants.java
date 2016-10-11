@@ -27,6 +27,9 @@ public final class Constants {
   public class Rss {
     public static final String RSS_URL = "https://habrahabr.ru/rss";
     public static final int RSS_UPDATE_INTERVAL = 60; ///(sec.) between rss data updates
+    public static final String RSS_PARSER_TITLE_NAME = "title";
+    public static final String RSS_PARSER_DESCRIPTION_NAME = "description";
+    public static final String RSS_PARSER_LINK_NAME = "link";
   }
 
   public class Errors {

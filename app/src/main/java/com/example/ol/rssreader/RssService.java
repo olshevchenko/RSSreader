@@ -12,6 +12,7 @@ import android.util.Log;
 
 import com.example.ol.rssreader.RSS.FeedParser;
 import com.example.ol.rssreader.RSS.RSSItem;
+import com.example.ol.rssreader.RSS.RSSParser;
 
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
@@ -109,32 +110,30 @@ public class RssService extends Service {
 
     @Override
     protected Void doInBackground(String... urls) {
+      InputStream stream;
 //      Log.d(LOG_TAG, "GetRssNParseTask(" + urls[0] + ") - doInBackground()");
-/*
       List<RSSItem> newList = null;
       try {
         URL url = new URL(urls[0]);
         HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-        conn.setReadTimeout(10000);
-        conn.setConnectTimeout(15000);
-        conn.setRequestMethod("GET");
-        conn.setDoInput(true);
-        conn.connect();
-        InputStream stream = conn.getInputStream();
-        // parse xml after getting the data
+        stream = conn.getInputStream();
         Log.d(LOG_TAG, "stream: " + stream);
-        newList = mFeedParser.parse(stream);
-      } catch (MalformedURLException e) {
-        Log.d(LOG_TAG, "URL format error");
-        e.printStackTrace();
-      } catch (XmlPullParserException | ParseException e) {
-        Log.d(LOG_TAG, "XML Parsing error");
+      } catch (IOException e) {
+        Log.w(LOG_TAG, "Exception while retrieving the input stream", e);
+        return null;
+      }
+      /// parse xml after getting the data
+      try {
+        RSSParser parser = new RSSParser();
+        newList = parser.parse(stream);
+      } catch (XmlPullParserException e) {
+        Log.d(LOG_TAG, "RSS Parsing error");
         e.printStackTrace();
       } catch (IOException e) {
-        Log.d(LOG_TAG, "IO error");
+        Log.d(LOG_TAG, "IO error during RSS parsing");
         e.printStackTrace();
       }
-*/
+/*
       List<RSSItem> newList = new ArrayList<>(3);
       RSSItem newItem;
       int idx;
@@ -145,7 +144,7 @@ public class RssService extends Service {
       }
       if (++sCount >= 5)
         sCount = 0;
-
+*/
       sDataStorage.storeNewData(newList);
       return null;
     }
