@@ -3,28 +3,21 @@ package com.example.ol.rssreader;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
-import android.net.ParseException;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.IBinder;
-import android.support.annotation.NonNull;
 import android.util.Log;
 
-import com.example.ol.rssreader.RSS.FeedParser;
 import com.example.ol.rssreader.RSS.RSSItem;
 import com.example.ol.rssreader.RSS.RSSParser;
 
-import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
-import org.xmlpull.v1.XmlPullParserFactory;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -37,7 +30,6 @@ public class RssService extends Service {
   private static DataStorage sDataStorage = null;
 
   private GetRssNParseTask mGetRssNParseTask = null;
-  private FeedParser mFeedParser = null;
 
   public void onCreate() {
     Log.d(LOG_TAG, "onCreate()");
@@ -45,18 +37,12 @@ public class RssService extends Service {
 
     /// get access to global RSS data
     sDataStorage = DataStorage.getInstance(this.getApplicationContext());
-
-    FeedParser mFeedParser = new FeedParser();
   }
 
   public int onStartCommand(Intent intent, int flags, int startId) {
 //    Log.d(LOG_TAG, "onStartCommand()");
-
     if (Constants.Actions.SERVICE_GET_DATA.equals(intent.getAction()))
       handleStart(intent.getExtras());
-
-//    return super.onStartCommand(intent, flags, startId);
-//    return Service.START_REDELIVER_INTENT;
     return Service.START_NOT_STICKY;
   }
 
@@ -124,8 +110,8 @@ public class RssService extends Service {
       }
       /// parse xml after getting the data
       try {
-        RSSParser parser = new RSSParser();
-        newList = parser.parse(stream);
+        RSSParser rssParser = new RSSParser();
+        newList = rssParser.parse(stream);
       } catch (XmlPullParserException e) {
         Log.d(LOG_TAG, "RSS Parsing error");
         e.printStackTrace();

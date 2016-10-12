@@ -1,6 +1,5 @@
 package com.example.ol.rssreader.RSS;
 
-import android.provider.SyncStateContract;
 import android.util.Xml;
 
 import com.example.ol.rssreader.Constants;
@@ -21,7 +20,8 @@ public class RSSParser {
 
   private final String ns = null;
 
-  public List<RSSItem> parse(InputStream inputStream) throws XmlPullParserException, IOException {
+  public List<RSSItem> parse(InputStream inputStream)
+      throws XmlPullParserException, IOException {
     try {
       XmlPullParser parser = Xml.newPullParser();
       parser.setFeature(XmlPullParser.FEATURE_PROCESS_NAMESPACES, false);
@@ -33,12 +33,13 @@ public class RSSParser {
     }
   }
 
-  private List<RSSItem> readFeed(XmlPullParser parser) throws XmlPullParserException, IOException {
-    parser.require(XmlPullParser.START_TAG, null, "rss");
+  private List<RSSItem> readFeed(XmlPullParser parser)
+      throws XmlPullParserException, IOException {
     String title = null;
     String link = null;
     String description = null;
     List<RSSItem> items = new ArrayList<>();
+    parser.require(XmlPullParser.START_TAG, ns, "rss");
     while (parser.next() != XmlPullParser.END_DOCUMENT) {
       if (parser.getEventType() != XmlPullParser.START_TAG) {
         continue;
@@ -61,21 +62,24 @@ public class RSSParser {
     return items;
   }
 
-  private String readTitle(XmlPullParser parser) throws XmlPullParserException, IOException {
+  private String readTitle(XmlPullParser parser)
+      throws XmlPullParserException, IOException {
     parser.require(XmlPullParser.START_TAG, ns, Constants.Rss.RSS_PARSER_TITLE_NAME);
     String title = readText(parser);
     parser.require(XmlPullParser.END_TAG, ns, Constants.Rss.RSS_PARSER_TITLE_NAME);
     return title;
   }
 
-  private String readDescription(XmlPullParser parser) throws XmlPullParserException, IOException {
+  private String readDescription(XmlPullParser parser)
+      throws XmlPullParserException, IOException {
     parser.require(XmlPullParser.START_TAG, ns, Constants.Rss.RSS_PARSER_DESCRIPTION_NAME);
     String description = readText(parser);
     parser.require(XmlPullParser.END_TAG, ns, Constants.Rss.RSS_PARSER_DESCRIPTION_NAME);
     return description;
   }
 
-  private String readLink(XmlPullParser parser) throws XmlPullParserException, IOException {
+  private String readLink(XmlPullParser parser)
+      throws XmlPullParserException, IOException {
     parser.require(XmlPullParser.START_TAG, ns, Constants.Rss.RSS_PARSER_LINK_NAME);
     String link = readText(parser);
     parser.require(XmlPullParser.END_TAG, ns, Constants.Rss.RSS_PARSER_LINK_NAME);
@@ -85,7 +89,8 @@ public class RSSParser {
   /**
    * for the string tags like title, description, link, extracts their text values
    */
-  private String readText(XmlPullParser parser) throws IOException, XmlPullParserException {
+  private String readText(XmlPullParser parser)
+      throws IOException, XmlPullParserException {
     String result = "";
     if (parser.next() == XmlPullParser.TEXT) {
       result = parser.getText();

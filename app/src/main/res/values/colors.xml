@@ -8,7 +8,8 @@
     <color name="colorBackground">#37474F</color>
     <color name="colorBackgroundDark">#263238</color>
 
-    <color name="colorText">#FFFFFF</color>
+    <color name="colorTitleText">#00BCD4</color>
+    <color name="colorDescrText">#FFFFFF</color>
     <color name="colorButtonText">#FFFFFF</color>
 
 </resources>

@@ -16,7 +16,9 @@
     <dimen name="widgetMinWidth">250dp</dimen>
     <dimen name="widgetMinHeight">110dp</dimen>
 
-    <dimen name="text_margin">8dp</dimen>
+    <dimen name="text_vertical_margin">8dp</dimen>
+    <dimen name="text_vertical_margin_small">8dp</dimen>
+    <dimen name="text_horizontal_margin">16dp</dimen>
     <dimen name="appname_text_size">14sp</dimen>
     <dimen name="header_text_size">12sp</dimen>
     <dimen name="descr_text_size">10sp</dimen>
